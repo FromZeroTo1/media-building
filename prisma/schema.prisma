@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ProductType {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String @unique
+  slug String @unique
+
+  description String
+  color       String
+
+  @@map("product_type")
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String @unique
+  slug String @unique
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  firstName String? @map("first_name")
+  lastName  String? @map("last_name")
+  login     String
+  email     String  @unique
+  password  String
+  phone     String?
+
+  balance Int @default(0)
+  bonus   Int @default(0)
+
+  avatarPath String @default("/uploads/avatars/default-avatar.png") @map("avatar_path")
+
+  favorites Product[]
+
+  isAdmin Boolean @default(false) @map("is_admin")
+}
